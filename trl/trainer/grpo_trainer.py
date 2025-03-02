@@ -93,12 +93,18 @@ class RepeatRandomSampler(Sampler):
         if seed is not None:
             self.generator.manual_seed(seed)
 
+    # def __iter__(self):
+    #     indexes = [
+    #         idx
+    #         for idx in torch.randperm(self.num_samples, generator=self.generator).tolist()
+    #         for _ in range(self.repeat_count)
+    #     ]
+    #     return iter(indexes)
+
+    # Process the samples in order for curriculum learning
+    # Should be valid for 1 epoch training
     def __iter__(self):
-        indexes = [
-            idx
-            for idx in torch.randperm(self.num_samples, generator=self.generator).tolist()
-            for _ in range(self.repeat_count)
-        ]
+        indexes = [idx for idx in range(self.num_samples) for _ in range(self.repeat_count)]
         return iter(indexes)
 
     def __len__(self):
